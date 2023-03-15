@@ -13,13 +13,11 @@ app.get("/:id", (req, res) => {
   try {
     const {id} = req.params;
     if (!DB[id]) {
-      let data = {count: 1, name: id};
-      DB[id] = data;
-      res.json({status: 400, data});
+      DB[id] = {count: 1, name: id};
+      res.json({status: 400, data: DB[id]});
     } else {
-      let data = {count: ++DB[id].count, name: DB[id].name};
-      DB[id] = data;
-      res.json({status: 400, data});
+      DB[id] = {...DB[id].count, count: ++DB[id].count};
+      res.json({status: 400, data: DB[id]});
     }
   } catch (e) {
     console.log(e);
@@ -29,8 +27,7 @@ app.get("/:id", (req, res) => {
 
 app.post("/:id", async (req, res) => {
   try {
-    let name = req.query.name;
-    const {id} = req.params;
+    const {name} = req.query, {id} = req.params;
     if (!DB[id]) {
       DB[id] = {count: 1, name};
       await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${id}`);
