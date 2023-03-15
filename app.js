@@ -16,7 +16,7 @@ app.get("/:id", (req, res) => {
       DB[id] = {count: 1, name: id};
       res.json({status: 400, data: DB[id]});
     } else {
-      DB[id] = {...DB[id].count, count: ++DB[id].count};
+      DB[id] = {...DB[id], count: ++DB[id].count};
       res.json({status: 400, data: DB[id]});
     }
   } catch (e) {
