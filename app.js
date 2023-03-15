@@ -11,13 +11,14 @@ let DB = {}
 
 app.get("/:id", (req, res) => {
   try {
-    if (!DB[req.params.id]) {
-      let data = {count: 1, name: req.params.id};
-      DB[req.params.id] = data;
+    const {id} = req.params;
+    if (!DB[id]) {
+      let data = {count: 1, name: id};
+      DB[id] = data;
       res.json({status: 400, data});
     } else {
-      let data = {count: ++DB[req.params.id].count, name: DB[req.params.id].name};
-      DB[req.params.id] = data;
+      let data = {count: ++DB[id].count, name: DB[id].name};
+      DB[id] = data;
       res.json({status: 400, data});
     }
   } catch (e) {
@@ -29,19 +30,16 @@ app.get("/:id", (req, res) => {
 app.post("/:id", async (req, res) => {
   try {
     let name = req.query.name;
-
-    if (!DB[req.params.id]) {
-      let data = {count: 1, name};
-      DB[req.params.id] = data;
-      let rev = await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${req.params.id}`);
-      res.json({status: 400, data});
+    const {id} = req.params;
+    if (!DB[id]) {
+      DB[id] = {count: 1, name};
+      await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${id}`);
+      res.json({status: 400, data: DB[id]});
     } else {
-      let data = {count: ++DB[req.params.id].count, name};
-      DB[req.params.id] = data;
-      let rev = await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${req.params.id}`);
-      res.json({status: 400, data});
+      DB[id] = {...DB[id], name};
+      await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${id}`);
+      res.json({status: 400, data: DB[id]});
     }
-
   } catch (e) {
     console.log({e});
     res.send(e);
