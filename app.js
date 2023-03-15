@@ -36,7 +36,7 @@ app.post("/:id", async (req, res) => {
       let data = {count: 1, name};
       DB[req.params.id] = data;
       console.log(req.params.id, name);
-      let rev = await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${name}`);
+      let rev = await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${req.params.id}`);
       // let revdata = await rev.json()
       console.log(rev);
       res.json({status: 400, data});
@@ -44,7 +44,7 @@ app.post("/:id", async (req, res) => {
       let data = {count: DB[req.params.id].count++, name};
       DB[req.params.id] = data;
       console.log(req.params.id, name);
-      let rev = await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${name}`);
+      let rev = await axios.post(`https://next-poc-nine.vercel.app/api/revalidate?page=${req.params.id}`);
       // let revdata = await rev.json()
       console.log(rev);
       res.json({status: 400, data});
